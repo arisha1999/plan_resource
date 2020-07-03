@@ -28,14 +28,19 @@
         [cdkDropListConnectedTo]=""
         class = "employee_dd"
         (cdkDropListDropped)="">
-          <div class="project">
-						<a id="{{employee.Employee_id}}">{{employee.text}}</a>
-						<div class="add_delete">
-							<a (click)="change_employee(employee.Employee_id)">&#10000;</a>
-							<a (click)="delete_employee(employee.Employee_id)">&#10006;</a>
-						</div>
-					</div>
+          
       </div> -->
+      <div cdkDropList class="example-list">
+          <div class="employee_dd" *ngFor="let employee of employees" cdkDrag>
+            <div class="project">
+              <a id="{{employee.Employee_id}}">{{employee.text}}</a>
+              <div class="add_delete">
+                <a (click)="change_employee(employee.Employee_id)">&#10000;</a>
+                <a (click)="delete_employee(employee.Employee_id)">&#10006;</a>
+              </div>
+          </div>
+          </div>
+      </div>
       <div id="add" (click)="open_window('add_employee')" class="employee_dd">
 				  Добавить работника
 			</div>
