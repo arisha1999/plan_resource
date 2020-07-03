@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html ng-app="plan_resource">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Планирование ресурсов</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="plan_resource.css" />
+	<script src="сontrollers.js"></script>
+</head>
+
+<body>
+	<div class="employees_block">
+      <!-- <div
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="todo"
+        [cdkDropListConnectedTo]="[doneList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+      </div>
+			<div 
+        cdkDropList class="example-list"
+        #employeesList="cdkDropList"
+        [cdkDropListData]="employees.text"
+        [cdkDropListConnectedTo]=""
+        class = "employee_dd"
+        (cdkDropListDropped)="">
+          <div class="project">
+						<a id="{{employee.Employee_id}}">{{employee.text}}</a>
+						<div class="add_delete">
+							<a (click)="change_employee(employee.Employee_id)">&#10000;</a>
+							<a (click)="delete_employee(employee.Employee_id)">&#10006;</a>
+						</div>
+					</div>
+      </div> -->
+      <div id="add" (click)="open_window('add_employee')" class="employee_dd">
+				  Добавить работника
+			</div>
+		</div>
+		<div class="main_block">
+			<div class="dates">
+				<input type="date" id="date_from" name="date_from" ng-model = "dates[0]" placeholder="yyyy-MM-dd" (change)="update()" required/>
+				<a>/</a>
+				<input type="date" id="date_to" name="date_to" ng-model = "dates[1]" placeholder="yyyy-MM-dd" (change)="update()" required/>
+				<a>{{error}}</a>
+			</div>
+			<div class="calendar">
+        
+        <table mat-table [dataSource]="calendar" class="mat-elevation-z8">
+            <ng-container [matColumnDef]="column" *ngFor="let column of caledar">
+              <tr mat-header-cell *matHeaderCellDef> {{column.Year}} </tr>
+              <tr mat-header-cell *matHeaderCellDef> {{column.Month}} </tr>
+              <tr mat-header-cell *matHeaderCellDef> {{column.Days}} </tr>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="calendar"></tr>
+	          <tr mat-row *matRowDef="let row; columns: calendar;"></tr>
+        </table>
+        <button class="add_project off" id="add_project" (click)="open_window('add_project_modal')">Добавить проект</button>
+			</div>
+		</div>
+        <div class="modal off" id="modal">
+            <h3>Выберите проект:</h3>
+            <select>
+              <option *ngFor="let project of projects">
+              {{project.text}}
+              </option>
+            </select>
+            <h3>Выберите дату начала:</h3>
+            <input type="date" id="date_from_info" name="date_from" placeholder="yyyy-MM-dd" value="" required/>
+            <h3>Выберите дату конца:</h3>
+            <input type="date" id="date_to_info" name="date_from" placeholder="yyyy-MM-dd" value="" required/>
+            <h3>Выберите занятость в процентах:</h3>
+            <a>10%</a><input type="range" id="occupation" name="cowbell" min="10" max="100" value = "10" step="5"><a>100%</a>
+            <div class="actions">
+                <p style="text-align: center"><button button class="toggle-button" (click)="change_plan()">Сохранить</button>
+                    <button button class="toggle-button" (click)="delete_from_plan()">Удалить</button>
+                    <button button class="toggle-button" (click)="close_window('modal')">Закрыть</button></p>
+            </div>
+        </div>
+        <div class="modal off" id="add_employee">
+            <h3>Напишите имя нового пользователя:</h3>
+            <a>{{error_add}}</a>
+            <input type="text" id = "new_employee" value="" required>
+            <a><br></a>
+            <div class="actions">
+                <p style="text-align: center"><button button class = "toggle-button" (click)="add_employee()">Добавить сотрудника</button>
+                    <button button class = "toggle-button" (click)="close_window('add_employee')">Закрыть</button></p>
+            </div>
+        </div>
+        <div class="modal off" id="add_project_modal">
+            <h3>Напишите название нового проекта:</h3>
+            <a>{{error_add}}</a>
+            <input type="text" id = "new_project" value="" required>
+            <a><br></a>
+            <div class="actions">
+                <p style="text-align: center"><button button class = "toggle-button" (click)="add_project()">Добавить проект</button>
+                    <button button class = "toggle-button" (click)="close_window('add_project_modal')">Закрыть</button></p>
+            </div>
+            
+            
+        </div>
+</body>
+
+</html>
+
+
+<!-- Copyright 2020 Google LLC. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at http://angular.io/license -->
