@@ -4,38 +4,74 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 /**
  * @title Drag&Drop sorting
  */
+
+export interface Dates{
+  Year:string;
+  Month:string;
+  Day:string;
+}
+
+export interface dataset{
+  projects_data:Project;
+  calendar_data:dates_c[];
+}
+
+export interface dates_c{
+  date:string;
+}
+
+export interface calendar{
+  year:string;
+  month:string;
+  day:string;
+  plan:plan[];
+}
+
+export interface employee{
+  Employee_id:number;
+  text:string;
+}
+
+export interface plan{
+  Project_id:number;
+  Workers:Worker[];
+}
+
+export interface Worker{
+  Employee_id:number;
+  Date_from:string;
+  Date_to:string;
+  Occupation:number;
+  Color:string;
+}
+
+export interface Project{
+  Project_id:number;
+  text:string;
+}
+
 export interface PeriodicElement {
   name: string;
   position: number;
   weight: number;
   symbol: string;
-  analytical_Function: string[]
 }
 
-
 const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', analytical_Function: ['function1', 'function2'] },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', analytical_Function: ['function3'] },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', analytical_Function: ['function4', 'function5'] },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be', analytical_Function: [] },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B', analytical_Function: ['function6'] },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C', analytical_Function: ['function7', 'function8'] },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N', analytical_Function: ['function9'] },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', analytical_Function: [] },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F', analytical_Function: [] },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne', analytical_Function: ['function10', 'function12'] },
+  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
+  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
+  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
+  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
+  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
+  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
+  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
+  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
+  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
 
-@Component({
-  selector: 'plan_resource',
-  templateUrl: 'plan_resource.html',
-  styleUrls: ['plan_resource.css'],
-})
-export class CdkDragDropSortingExample {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'analytical_Function'];
-  dataSource = ELEMENT_DATA;
 
-  employees=[
+const DATA_EMPLOYEES: employee[]=[
             {Employee_id:0,text:"Сотрудник 1"},
             {Employee_id:1,text:"Сотрудник 2"},
             {Employee_id:2,text:"Сотрудник 3"},
@@ -86,26 +122,50 @@ export class CdkDragDropSortingExample {
             {Employee_id:47,text:"Сотрудник 48"},
             {Employee_id:48,text:"Сотрудник 49"}
         ];
+
+
+@Component({
+  selector: 'plan_resource',
+  templateUrl: 'plan_resource.html',
+  styleUrls: ['plan_resource.css'],
+})
+export class CdkDragDropSortingExample {
+  displayedColumns: string[] = ['name', 'weight', 'symbol', 'position'];
+  columnsToDisplay: string[] = this.displayedColumns.slice();
+  data: PeriodicElement[] = ELEMENT_DATA;
+  
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+  }
+        employees:employee[]= DATA_EMPLOYEES;
         error="";
         error_add = " ";
         dates=[{date:""},{date:""}];
-        calendar = [{"Year":" ","Month":" ","Day":" "}];
-        new_calendar=[{Project_id:0,Workers:[{Employee_id:0,Date_from:"",Date_to:"",Occupation:25,Color:"#FFF"}]}];
-        projects = [
+        calendar:Dates[] = [];
+        new_calendar:plan[];
+        projects : Project[]= [
             {Project_id:0,text:"Проект1"},
             {Project_id:1,text:"Проект2"},
             {Project_id:2,text:"Проект3"},
             {Project_id:3,text:"Проект4"},
             {Project_id:4,text:"Проект5"}
         ];
+        action="add_employee()";
         projects_ = [{Project_id: 0, text: ""}];
-        plan=[
+        plan:plan[]=[
             {Project_id:0, Workers:[{Employee_id:0,Date_from:"2020-06-01",Date_to:"2020-06-03",Occupation:25,Color:"#FFF"},{Employee_id:1,Date_from:"2020-06-01",Date_to:"2020-06-03",Occupation:25,Color:"#FFF"}]},
-            {Project_id:1, Workers:[{Employee_id:2,Date_from:"2020-06-01",Date_to:"2020-06-03",Occupation:25,Color:"#FFF"},{Employee_id:3,Date_from:"2020-06-01",Date_to:"2020-06-03",Occupation:25,Color:"#FFF"}]},
+            {Project_id:1, Workers:[{Employee_id:2,Date_from:"2020-06-04",Date_to:"2020-06-06",Occupation:25,Color:"#FFF"},{Employee_id:3,Date_from:"2020-06-01",Date_to:"2020-06-03",Occupation:25,Color:"#FFF"}]},
             ];
         //обновление таблицы с планом
         update(){
-            this.calendar=[];
+            this.dataSource=[]
             this.new_calendar=[];
             this.dates[0].date = (<HTMLInputElement>document.getElementById('date_from')).value;
             this.dates[1].date = (<HTMLInputElement>document.getElementById('date_to')).value;
@@ -122,7 +182,7 @@ export class CdkDragDropSortingExample {
         };
         //создание листа с датами между введенными датами
         between_dates() {
-            this.calendar = [{"Year":" ","Month":" ","Day":" "}];
+            this.calendar = [];
             var days_from = new Date(this.dates[0].date).getDate();
             var days_to = new Date(this.dates[1].date).getDate();
             var month_from = new Date(this.dates[0].date).getMonth();
@@ -183,8 +243,7 @@ export class CdkDragDropSortingExample {
                             this.new_calendar[i].Workers.push(this.plan[i].Workers[j]);
                         }
                         else {
-                            this.new_calendar.push({Project_id:this.plan[i].Project_id, Workers:[]});
-                            this.new_calendar[i].Workers.push(this.plan[i].Workers[j]);
+                            this.new_calendar.push({Project_id:this.plan[i].Project_id, Workers:[this.plan[i].Workers[j]]});
                         }
                     }
                 }
@@ -198,19 +257,38 @@ export class CdkDragDropSortingExample {
             }
             else{
                 (<HTMLInputElement>document.getElementById('add_project')).setAttribute('class','add_project');
+                this.build_data_source();
             }
+        };
+
+        build_data_source(){
+            var header= {Project_id:0,text:"Проекты/Даты"};
+            var dates : dates_c[]=[];
+            this.displayedColumns.push(header.text);
+            for(var i = 0; i < this.projects.length;i++){
+              dates.push({date:this.projects[i].text});
+            }
+            this.dataSource.push({projects_data:header,calendar_data:dates});
+            for(var i = 0; i < this.calendar.length;i++){
+              dates=[];
+              var date_ = this.calendar[i].Year+"/"+this.calendar[i].Month+"/"+this.calendar[i].Day;
+              this.displayedColumns.push(date_);
+              for(var j = 0; j < this.projects.length;j++){
+                dates.push({date:"LOL"});
+              }
+              this.dataSource.push({projects_data:header,calendar_data:dates});
+            }
+            alert("LOL");
         };
 
         //добавление нового сотрудника
         add_employee() {
-            var new_employee = (<HTMLInputElement>document.getElementById('new_employee')).value;
+            var new_employee = (<HTMLInputElement>document.getElementById('new_record')).value;
             if(this.employees.some(e=>e.text==new_employee)){
                 this.error_add="Работник с таким именем уже существует";
             }
             else {
                 this.employees.push({Employee_id:this.employees.length,text:new_employee});
-                (<HTMLInputElement>document.getElementById('new_employee')).value = "";
-                this.error_add="";
                 this.close_window('add_employee');
             }
         };
@@ -235,40 +313,44 @@ export class CdkDragDropSortingExample {
 
         //изменение имени сотрудника
         change_employee(employee_id:number){
-            var new_employee = (<HTMLInputElement>document.getElementById('new_employee')).value;
+            var new_employee = (<HTMLInputElement>document.getElementById('new_record')).value;
             if(this.employees.some(e=>e.text==new_employee)){
                 this.error_add="Работник с таким именем уже существует";
             }
             else {
                 this.employees[employee_id].text = new_employee;
-                (<HTMLInputElement>document.getElementById('new_employee')).value
-                this.error_add="";
                 this.close_window('add_employee');
             }
         };
 
         //открытие окна
-        open_window(window_id:string){
-            (<HTMLInputElement>document.getElementById(window_id)).setAttribute('display','block');
-            (<HTMLInputElement>document.getElementById(window_id)).setAttribute('class','modal');
+        open_window(window_id:string,action:string,label:string,button:string){
+          if(window_id!="modal"){
+            (<HTMLInputElement>document.getElementById('label_new_record')).innerText = label;
+            (<HTMLInputElement>document.getElementById('add_record_button')).setAttribute('click',"close_window('add_new_record')");
+            (<HTMLInputElement>document.getElementById('add_record_button')).innerText = button;
+            // (<HTMLInputElement>document.getElementById('add_employee_button')).addEventListener("click",'add_employee()');
+          }
+          (<HTMLInputElement>document.getElementById(window_id)).setAttribute('display','block');
+          (<HTMLInputElement>document.getElementById(window_id)).setAttribute('class','modal');
         };
 
         //закрытие окна
         close_window(window_id:string){
           (<HTMLInputElement>document.getElementById(window_id)).setAttribute('display','none');
           (<HTMLInputElement>document.getElementById(window_id)).setAttribute('class','modal off');
-        }
+          (<HTMLInputElement>document.getElementById('new_record')).value = "";
+          this.error_add=" ";
+        };
 
         //добавление проекта
         add_project(){
-            var new_project = (<HTMLInputElement>document.getElementById('new_project')).value;
+            var new_project = (<HTMLInputElement>document.getElementById('new_record')).value;
             if(this.projects.some(e=>e.text==new_project)){
                 this.error_add="Проект с таким именем уже существует";
             }
             else {
                 this.projects.push({Project_id:this.projects.length,text:new_project});
-                (<HTMLInputElement>document.getElementById('new_project')).value="";
-                this.error_add="";
                 this.close_window('add_project_modal');
             }
         };
@@ -289,14 +371,12 @@ export class CdkDragDropSortingExample {
 
         //изменение проекта
         change_project(project_id:number) {
-            var new_project = (<HTMLInputElement>document.getElementById('new_project')).value;
+            var new_project = (<HTMLInputElement>document.getElementById('new_')).value;
             if(this.projects.some(e=>e.text==new_project)){
                 this.error_add="Работник с таким именем уже существует";
             }
             else {
                 this.projects[project_id].text=new_project;
-                (<HTMLInputElement>document.getElementById('new_project')).value="";
-                this.error_add="";
                 this.close_window('add_project_modal');
             }
         };
@@ -311,7 +391,7 @@ export class CdkDragDropSortingExample {
             else {
               this.plan[project_index].Workers.push({Employee_id:worker_id,Date_from:date_from,Date_to:date_to,Occupation:Ocupation,Color:'#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)});
             }
-        }
+        };
 
         //удаление записи из таблицы
         delete_from_plan(project_id:number,worker_id:number){
@@ -320,7 +400,7 @@ export class CdkDragDropSortingExample {
                 var worker_index = this.plan[project_index].Workers.find(worker=> worker.Employee_id == worker_id);
                 this.plan[project_index].Workers.splice(worker_id,1);
             }
-        }
+        };
 
         //редактирование записи в таблице
         change_plan(worker_id:number, project_id:number,date_from:string,date_to:string,Ocupation:number){
@@ -329,12 +409,17 @@ export class CdkDragDropSortingExample {
             if(worker_index){
             this.plan[project_index].Workers[worker_index] ={Employee_id:worker_id,Date_from:date_from,Date_to:date_to,Occupation:Ocupation,Color:this.plan[project_index].Workers[worker_index].Color};
             }
-        }
+        };
 
         // event вставка новой записи сотрудника
         drop_employee(event: CdkDragDrop<string[]>){
-
-        }
+            if(true){
+              var date= new Date();
+              var new_date = new Date();
+              new_date.setDate(date.getDate()+7);
+              this.add_to_plan(1,2,date.toDateString(),new_date.toDateString(),100);
+            }
+        };
 
         // event передвижения по таблице
         drop_on_table(event: CdkDragDrop<any>) {
@@ -349,17 +434,17 @@ export class CdkDragDropSortingExample {
               event.currentIndex);
 
           }
-        }
-
+        };
+        
         // event изменение записи сотрудника
         //открываем просто окно modal 
 
         // event выход за границы таблицы
         drop_delete(event: CdkDragDrop<string[]>) {
             if (event.previousContainer != event.container) {
-              this.delete_from_plan();
+              //this.delete_from_plan();
             }
-        }
+        };
 
 
         
