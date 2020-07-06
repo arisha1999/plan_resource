@@ -7,7 +7,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="plan_resource.css" />
-	<script src="сontrollers.js"></script>
 </head>
 
 <body>
@@ -15,10 +14,8 @@
       <div 
         cdkDropList
         #employeesList="cdkDropList"
-        [cdkDropListData]="employees" 
-        [cdkDropListConnectedTo]="[planList]"
-        class="example-list" 
-        (cdkDropListDropped)="drop_employee($event)">
+        [cdkDropListData]="employees"
+        class="example-list">
           <div class="employee_dd" *ngFor="let employee of employees" cdkDrag>
             <div class="project">
               <a id="{{employee.Employee_id}}">{{employee.text}}</a>
@@ -67,8 +64,8 @@
             <h3>Выберите занятость в процентах:</h3>
             <a>10%</a><input type="range" id="occupation" name="cowbell" min="10" max="100" value = "10" step="5"><a>100%</a>
             <div class="actions">
-                <p style="text-align: center"><button button class="toggle-button" (click)="change_plan()">Сохранить</button>
-                    <button button class="toggle-button" (click)="delete_from_plan()">Удалить</button>
+                <p style="text-align: center"><button button class="toggle-button" (click)="change_plan(0,0,'','',25)">Сохранить</button>
+                    <button button class="toggle-button" (click)="delete_from_plan(0,0)">Удалить</button>
                     <button button class="toggle-button" (click)="close_window('modal')">Закрыть</button></p>
             </div>
         </div>

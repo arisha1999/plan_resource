@@ -10,7 +10,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DemoMaterialModule} from './app/material-module';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
-import {CdkDragDropSortingExample} from './app/plan_resource';
+import {PlanResourceComponent} from './app/plan_resource.component';
 
 // Default MatFormField appearance to 'fill' as that is the new recommended approach and the
 // `legacy` and `standard` appearances are scheduled for deprecation in version 10.
@@ -25,9 +25,9 @@ import {CdkDragDropSortingExample} from './app/plan_resource';
     MatNativeDateModule,
     ReactiveFormsModule,
   ],
-  entryComponents: [CdkDragDropSortingExample],
-  declarations: [CdkDragDropSortingExample],
-  bootstrap: [CdkDragDropSortingExample],
+  entryComponents: [PlanResourceComponent],
+  declarations: [PlanResourceComponent],
+  bootstrap: [PlanResourceComponent],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
   ]
