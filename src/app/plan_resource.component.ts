@@ -126,7 +126,7 @@ const DATA_EMPLOYEES: Employee[] = [
 
 
 @Component({
-  selector: 'plan_resource',
+  selector: 'PlanResourceComponent',
   templateUrl: 'plan_resource.html',
   styleUrls: ['plan_resource.css'],
 })
