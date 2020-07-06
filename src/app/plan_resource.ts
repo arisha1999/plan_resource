@@ -133,7 +133,7 @@ export class CdkDragDropSortingExample {
   displayedColumns: string[] = ['name', 'weight', 'symbol', 'position'];
   columnsToDisplay: string[] = this.displayedColumns.slice();
   data: PeriodicElement[] = ELEMENT_DATA;
-  
+  dataSource:dataset[] = [];
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -289,7 +289,7 @@ export class CdkDragDropSortingExample {
             }
             else {
                 this.employees.push({Employee_id:this.employees.length,text:new_employee});
-                this.close_window('add_employee');
+                this.close_window('add_new_record');
             }
         };
 
@@ -319,7 +319,7 @@ export class CdkDragDropSortingExample {
             }
             else {
                 this.employees[employee_id].text = new_employee;
-                this.close_window('add_employee');
+                this.close_window('add_new_record');
             }
         };
 
@@ -329,12 +329,11 @@ export class CdkDragDropSortingExample {
             (<HTMLInputElement>document.getElementById('label_new_record')).innerText = label;
             (<HTMLInputElement>document.getElementById('add_record_button')).setAttribute('click',"close_window('add_new_record')");
             (<HTMLInputElement>document.getElementById('add_record_button')).innerText = button;
-            // (<HTMLInputElement>document.getElementById('add_employee_button')).addEventListener("click",'add_employee()');
           }
           (<HTMLInputElement>document.getElementById(window_id)).setAttribute('display','block');
           (<HTMLInputElement>document.getElementById(window_id)).setAttribute('class','modal');
         };
-
+        
         //закрытие окна
         close_window(window_id:string){
           (<HTMLInputElement>document.getElementById(window_id)).setAttribute('display','none');
@@ -351,7 +350,7 @@ export class CdkDragDropSortingExample {
             }
             else {
                 this.projects.push({Project_id:this.projects.length,text:new_project});
-                this.close_window('add_project_modal');
+                this.close_window('add_new_record');
             }
         };
 
@@ -373,23 +372,35 @@ export class CdkDragDropSortingExample {
         change_project(project_id:number) {
             var new_project = (<HTMLInputElement>document.getElementById('new_')).value;
             if(this.projects.some(e=>e.text==new_project)){
-                this.error_add="Работник с таким именем уже существует";
+                this.error_add="Проект с таким названием уже существует";
             }
             else {
                 this.projects[project_id].text=new_project;
-                this.close_window('add_project_modal');
+                this.close_window('add_new_record');
             }
         };
 
         //добавление записи в таблицу
         add_to_plan(project_id:number,worker_id:number,date_from:string,date_to:string,Ocupation:number){
             var project_index = this.plan.findIndex(project_ => project_.Project_id==project_id);
+            var occ = Ocupation;
             var worker_index = this.plan[project_index].Workers.find(worker=> worker.Employee_id == worker_id);
             if(worker_index){
               alert("Данный работник уже занимается данным проектом!");
             }
             else {
-              this.plan[project_index].Workers.push({Employee_id:worker_id,Date_from:date_from,Date_to:date_to,Occupation:Ocupation,Color:'#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)});
+              var k = 0; 
+              for(var i = 0; i < this.new_calendar.length;i++){
+                for(var j = 0; j < this.new_calendar[i].Workers.length;j++){
+                  if(this.new_calendar[i].Workers[j].Employee_id==worker_id){
+                    k+=this.new_calendar[i].Workers[j].Occupation;
+                  }
+                }
+              }
+              if(100-k<Ocupation){
+                occ=100-k;
+              }
+              this.plan[project_index].Workers.push({Employee_id:worker_id,Date_from:date_from,Date_to:date_to,Occupation:occ,Color:'#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)});
             }
         };
 
@@ -405,20 +416,36 @@ export class CdkDragDropSortingExample {
         //редактирование записи в таблице
         change_plan(worker_id:number, project_id:number,date_from:string,date_to:string,Ocupation:number){
             var project_index = this.plan.findIndex(project_ => project_.Project_id==project_id);
-            var worker_index = this.plan[project_index].Workers.find(worker=> worker.Employee_id == worker_id);
+            var worker_index = this.plan[project_index].Workers.findIndex(worker=> worker.Employee_id == worker_id);
+            var occ = Ocupation;
             if(worker_index){
-            this.plan[project_index].Workers[worker_index] ={Employee_id:worker_id,Date_from:date_from,Date_to:date_to,Occupation:Ocupation,Color:this.plan[project_index].Workers[worker_index].Color};
+            var k = 0; 
+              for(var i = 0; i < this.new_calendar.length;i++){
+                for(var j = 0; j < this.new_calendar[i].Workers.length;j++){
+                  if(this.new_calendar[i].Workers[j].Employee_id==worker_id){
+                    k+=this.new_calendar[i].Workers[j].Occupation;
+                  }
+                }
+              }
+              occ-=this.plan[project_index].Workers[worker_index].Occupation;
+              if(100-k<Ocupation){
+                occ=100-k;
+              }
+              this.plan[project_index].Workers[worker_index] ={Employee_id:worker_id,Date_from:date_from,Date_to:date_to,Occupation:occ,Color:this.plan[project_index].Workers[worker_index].Color};
             }
         };
 
         // event вставка новой записи сотрудника
         drop_employee(event: CdkDragDrop<string[]>){
-            if(true){
-              var date= new Date();
-              var new_date = new Date();
-              new_date.setDate(date.getDate()+7);
-              this.add_to_plan(1,2,date.toDateString(),new_date.toDateString(),100);
-            }
+            let employee_index = event.previousIndex;
+            let project_index = event.currentIndex;
+            let day = this.calendar[project_index+1].Day;
+            let month = this.calendar[project_index+1].Month;
+            let year = this.calendar[project_index+1].Year;
+            var date = new Date(parseInt(year),parseInt(month)-1,parseInt(day));
+            var new_date = new Date();
+            new_date.setDate(date.getDate()+7);
+            this.add_to_plan(project_index,employee_index,date.toDateString(),new_date.toDateString(),100);
         };
 
         // event передвижения по таблице
@@ -432,22 +459,25 @@ export class CdkDragDropSortingExample {
               event.container.data,
               event.previousIndex,
               event.currentIndex);
-
           }
         };
         
-        // event изменение записи сотрудника
-        //открываем просто окно modal 
-
         // event выход за границы таблицы
         drop_delete(event: CdkDragDrop<string[]>) {
-            if (event.previousContainer != event.container) {
-              //this.delete_from_plan();
+            let trashEl = document.getElementById('table_info') as HTMLElement;
+            let x1 = trashEl.offsetLeft;
+            let x2 = trashEl.offsetLeft + trashEl.offsetWidth;
+            let y1 = trashEl.offsetTop;
+            let y2 = trashEl.offsetTop + trashEl.offsetHeight;
+
+            if (event.pageX >= x1 && event.pageX<= x2 &&
+            event.pageY >= y1 && event.pageY <= y2) {
+                if (confirm("Are you sure to  detete " + event.title +" ?")) {
+                    //pour annuker les informations
+                    $('#external-calendar').fullCalendar('removeEvents', event._id);
+                }
             }
-        };
-
-
-        
+        };       
 }
 
 /**  Copyright 2020 Google LLC. All Rights Reserved.

@@ -18,18 +18,18 @@
         [cdkDropListData]="employees" 
         [cdkDropListConnectedTo]="[planList]"
         class="example-list" 
-        (cdkDropListDropped)="drop($event)">
+        (cdkDropListDropped)="drop_employee($event)">
           <div class="employee_dd" *ngFor="let employee of employees" cdkDrag>
             <div class="project">
               <a id="{{employee.Employee_id}}">{{employee.text}}</a>
               <div class="add_delete">
-                <a (click)="open_window('add_employee','change_employee('+employee.Employee_id+')','Введите измененное имя работника','Изменить сотрудника')">&#10000;</a>
+                <a (click)="open_window('add_new_record','change_employee('+employee.Employee_id+')','Введите измененное имя работника','Изменить сотрудника')">&#10000;</a>
                 <a (click)="delete_employee(employee.Employee_id)">&#10006;</a>
               </div>
           </div>
           </div>
       </div>
-      <div id="add" (click)="open_window('add_employee','add_employee()','Введите имя нового работника','Добавить сотрудника')" class="employee_dd">
+      <div id="add" (click)="open_window('add_new_record','add_employee()','Введите имя нового работника','Добавить сотрудника')" class="employee_dd">
 				  Добавить работника
 			</div>
 		</div>
@@ -41,14 +41,10 @@
 				<a>{{error}}</a>
 			</div>
 			<div class="calendar">
-        <table mat-table [dataSource]="data" class="mat-elevation-z8">
+        <table id = "table_info" mat-table [dataSource]="data" class="mat-elevation-z8">
           <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
             <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-            <td mat-cell *matCellDef="let element">
-              <div cdkDropList [cdkDropListData]="element" (cdkDropListDropped)="drop($event)">
-                <button mat-button color="primary" cdkDrag>{{element[column]}}</button>
-                </div>
-            </td>
+            <td mat-cell *matCellDef="let element" (click)="open_window('modal','','','')"> {{element[column]}} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
@@ -82,8 +78,8 @@
             <input type="text" id = "new_record" value="" required>
             <a><br></a>
             <div class="actions">
-                <p style="text-align: center"><button button id="add_record_button" class = "toggle-button" (click)="change_employee(0)">Добавить сотрудника</button>
-                    <button button class = "toggle-button" (click)="close_window('add_new_record')">Закрыть</button></p>
+                <p style="text-align: center"><button button id="add_record_button" class = "toggle-button" (click)="add_employee()">Добавить сотрудника</button>
+                    <button button class = "toggle-button" (click)="close_window(add_new_record)">Закрыть</button></p>
             </div>
         </div>
 </body>
